@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: UserService
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    url: jdbc:postgresql://localhost:5432/hardwareshop
+    user: postgres
+    password: password
+    baseline-on-migrate: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hardwareshop
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+server:
+  port: 7070
+eureka:
+  client:
+    service-url:
+      defaultZone=http://localhost:8761/eureka:
