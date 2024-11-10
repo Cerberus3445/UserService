@@ -29,8 +29,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(Long id, UserDto userDto) {
         this.userRepository.findById(id).ifPresentOrElse(user -> {
-            userDto.setId(id);
-            this.userRepository.save(this.mapper.toEntity(userDto));
+            User mapperUser = this.mapper.toEntity(userDto);
+            mapperUser.setId(id);
+            mapperUser.setPassword(user.getPassword());
+            this.userRepository.save(mapperUser);
         }, () -> {
             throw new UserNotFoundException(id);
         });

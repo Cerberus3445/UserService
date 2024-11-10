@@ -31,9 +31,6 @@ public class UserDto {
     @Max(value = 50, message = "Максимальная длина email составляет 50 символов")
     private String email;
 
-    @NotNull(message = "Пароль не может быть пустым")
-    private String password;
-
     @NotNull(message = "Роль не может быть пустой")
     private Role role;
 }
