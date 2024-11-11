@@ -8,6 +8,7 @@ import com.cerberus.userservice.repository.UserRepository;
 import com.cerberus.userservice.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
     private EntityDtoMapper mapper;
 
     @Override
+    @Cacheable(value = "users", key = "#id")
     @Transactional
     public UserDto get(Long id) {
         return this.mapper.toDto(this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
