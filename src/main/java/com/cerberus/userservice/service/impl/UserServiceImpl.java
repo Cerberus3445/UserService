@@ -7,9 +7,13 @@ import com.cerberus.userservice.model.User;
 import com.cerberus.userservice.repository.UserRepository;
 import com.cerberus.userservice.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -20,25 +24,33 @@ public class UserServiceImpl implements UserService {
     private EntityDtoMapper mapper;
 
     @Override
+    @Cacheable(value = "user", key = "#id")
     @Transactional
     public UserDto get(Long id) {
+        log.info("get {}", id);
         return this.mapper.toDto(this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
     }
 
     @Override
+    @CacheEvict(value = "user", key = "#id")
     @Transactional
     public void update(Long id, UserDto userDto) {
+        log.info("update {}, {}", id, userDto);
         this.userRepository.findById(id).ifPresentOrElse(user -> {
-            userDto.setId(id);
-            this.userRepository.save(this.mapper.toEntity(userDto));
+            User mapperUser = this.mapper.toEntity(userDto);
+            mapperUser.setId(id);
+            mapperUser.setPassword(user.getPassword());
+            this.userRepository.save(mapperUser);
         }, () -> {
             throw new UserNotFoundException(id);
         });
     }
 
     @Override
+    @CacheEvict(value = "user", key = "#id")
     @Transactional
     public void delete(Long id) {
+        log.info("delete {}", id);
         this.userRepository.deleteById(id);
     }
 }
