@@ -1,5 +1,5 @@
 FROM openjdk:21
-LABEL authors="egor"
+LABEL authors="egormalov"
 
 VOLUME /tmp
 WORKDIR /app
