@@ -31,7 +31,7 @@ public class User {
 
     private String email;
 
-    private Boolean isEnabled;
+    private boolean isEnabled;
 
-    private Boolean isEmailVerified;
+    private boolean isEmailVerified;
 }
