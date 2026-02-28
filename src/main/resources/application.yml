@@ -14,12 +14,12 @@ spring:
     show-sql: false
     open-in-view: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/quiz
+    url: jdbc:postgresql://localhost:5433/user
     username: postgres
     password: password
     driver-class-name: org.postgresql.Driver
   flyway:
-    url: jdbc:postgresql://localhost:5432/quiz
+    url: jdbc:postgresql://localhost:5433/user
     user: postgres
     password: password
     baseline-on-migrate: true
