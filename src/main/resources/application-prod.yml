@@ -8,6 +8,7 @@ spring:
     type: redis
     cache-names: redis-cache
   jpa:
+    database-platform: ru.gentleman.user.config.AxonPostgreSQLDialect
     hibernate:
       ddl-auto: validate
     show-sql: false
