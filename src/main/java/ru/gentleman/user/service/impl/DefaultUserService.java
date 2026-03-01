@@ -111,6 +111,13 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    public Boolean existsById(UUID id) {
+        log.info("existsById {}", id);
+
+        return this.userRepository.existsById(id);
+    }
+
+    @Override
     @Transactional
     public void updateEmailConfirmedStatus(String email) {
         log.info("updateEmailConfirmedStatus {}", email);
