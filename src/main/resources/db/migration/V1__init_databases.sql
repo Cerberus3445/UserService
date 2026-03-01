@@ -1,14 +1,14 @@
-CREATE SCHEMA IF NOT EXISTS account;
+CREATE SCHEMA IF NOT EXISTS accounts;
 
-CREATE TABLE IF NOT EXISTS account.user(
+CREATE TABLE IF NOT EXISTS accounts.users(
     id UUID PRIMARY KEY ,
-    email varchar(254) NOT NULL UNIQUE ,
-    role varchar(20) NOT NULL ,
-    password varchar(260) NOT NULL ,
-    firstName varchar(100) NOT NULL ,
-    lastName varchar(100) NOT NULL ,
-    is_enabled BOOLEAN DEFAULT FALSE,
-    is_email_verified BOOLEAN DEFAULT FALSE
+    email VARCHAR(254) NOT NULL UNIQUE ,
+    role VARCHAR(20) NOT NULL ,
+    password VARCHAR(260) NOT NULL ,
+    first_name VARCHAR(100) NOT NULL ,
+    last_name VARCHAR(100) NOT NULL ,
+    is_enabled BOOLEAN,
+    is_email_verified BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS domain_event_entry (
