@@ -3,10 +3,12 @@ package ru.gentleman.user.query.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
+import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.web.bind.annotation.*;
 import ru.gentleman.user.dto.UserDto;
-import ru.gentleman.user.service.UserService;
+import ru.gentleman.user.query.FindUserByEmailQuery;
+import ru.gentleman.user.query.FindUserByIdQuery;
 
 import java.util.UUID;
 
@@ -16,19 +18,19 @@ import java.util.UUID;
 @Tag(name = "User Query Controller", description = "Взаимодействие с query операциями пользователя")
 public class UserQueryController {
 
-    private final UserService userService;
-
-    private final MessageSource messageSource;
+    private final QueryGateway queryGateway;
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение пользователя.")
     public UserDto get(@PathVariable("id") UUID id){
-        return this.userService.get(id);
+        return this.queryGateway.query(new FindUserByIdQuery(id),
+                ResponseTypes.instanceOf(UserDto.class)).join();
     }
 
     @GetMapping(params = "email")
     @Operation(summary = "Получение пользователя по электронной почте.")
     public UserDto getByEmail(@RequestParam("email") String email){
-        return this.userService.getByEmail(email);
+        return this.queryGateway.query(new FindUserByEmailQuery(email),
+                ResponseTypes.instanceOf(UserDto.class)).join();
     }
 }
