@@ -11,6 +11,8 @@ public interface UserService extends CrudOperations<UserDto, UUID> {
 
     Boolean existsUserByEmail(String email);
 
+    Boolean existsById(UUID id);
+
     void updateEmailConfirmedStatus(String email);
 
     void updatePassword(String newPassword, String email);

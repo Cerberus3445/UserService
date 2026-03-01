@@ -42,7 +42,7 @@ public class UserDto implements Serializable {
     @NotNull(message = "{validation.userdto.role.not_null}")
     private Role role;
 
-    private boolean isEnabled;
+    private Boolean isEnabled;
 
-    private boolean isEmailVerified;
+    private Boolean isEmailVerified;
 }
