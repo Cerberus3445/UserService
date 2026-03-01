@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.gentleman.commom.util.ExceptionUtils;
@@ -29,8 +28,6 @@ public class DefaultUserService implements UserService {
 
     private final CacheClear cacheClear;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Override
     @Cacheable(value = "user", key = "#id")
     public UserDto get(UUID id) {
@@ -48,7 +45,6 @@ public class DefaultUserService implements UserService {
         log.info("create {}", userDto);
 
         User user = this.userMapper.toEntity(userDto);
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setIsEnabled(true);
         user.setIsEmailVerified(false);
 
@@ -135,8 +131,6 @@ public class DefaultUserService implements UserService {
 
         User user = this.userRepository.findByEmailAndIsEnabled(email, true)
                 .orElseThrow(() -> ExceptionUtils.notFound("error.user.not_found_id", email));
-
-        user.setPassword(this.passwordEncoder.encode(newPassword));
 
         this.cacheClear.clearUserById(user.getId());
         this.cacheClear.clearEmail(email);
