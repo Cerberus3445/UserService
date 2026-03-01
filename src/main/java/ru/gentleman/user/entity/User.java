@@ -2,7 +2,6 @@ package ru.gentleman.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 import ru.gentleman.commom.dto.Role;
 
 import java.util.UUID;
@@ -17,8 +16,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
     private UUID id;
 
     private String firstName;

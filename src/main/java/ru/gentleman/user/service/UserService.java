@@ -1,11 +1,21 @@
 package ru.gentleman.user.service;
 
-import ru.gentleman.commom.service.CrudOperations;
+import ru.gentleman.commom.event.UserCreatedEvent;
+import ru.gentleman.commom.event.UserDeletedEvent;
+import ru.gentleman.commom.event.UserUpdatedEvent;
 import ru.gentleman.user.dto.UserDto;
 
 import java.util.UUID;
 
-public interface UserService extends CrudOperations<UserDto, UUID> {
+public interface UserService {
+
+    UserDto get(UUID id);
+
+    void create(UserCreatedEvent event);
+
+    void update(UserUpdatedEvent event);
+
+    void delete(UserDeletedEvent event);
 
     UserDto getByEmail(String email);
 

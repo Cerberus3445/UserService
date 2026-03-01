@@ -42,6 +42,14 @@ redisson:
   password: password
 
 axon:
+  eventhandling:
+    processors:
+      user-group:
+        mode: pooled
+  serializer:
+    general: jackson
+    events: jackson
+    messages: jackson
   axonserver:
     servers: localhost:8124
   update-check:
