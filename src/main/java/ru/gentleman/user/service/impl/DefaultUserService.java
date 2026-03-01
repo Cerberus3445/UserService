@@ -6,6 +6,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gentleman.commom.event.UserCreatedEvent;
+import ru.gentleman.commom.event.UserDeletedEvent;
+import ru.gentleman.commom.event.UserUpdatedEvent;
 import ru.gentleman.commom.util.ExceptionUtils;
 import ru.gentleman.user.cache.CacheClear;
 import ru.gentleman.user.dto.UserDto;
@@ -18,7 +21,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DefaultUserService implements UserService {
 
@@ -41,31 +44,27 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserDto create(UserDto userDto) {
-        log.info("create {}", userDto);
+    public void create(UserCreatedEvent event) {
+        log.info("create {}", event);
 
-        User user = this.userMapper.toEntity(userDto);
+        User user = this.userMapper.toEntity(event);
         user.setIsEnabled(true);
         user.setIsEmailVerified(false);
 
-        User createdUser = this.userRepository.save(
-                user
-        );
-
-        return this.userMapper.toDto(createdUser);
+        this.userRepository.save(user);
     }
 
     @Override
     @Transactional
-    @CacheEvict(value = "user", key = "#id")
-    public void update(UUID id, UserDto userDto) {
-        log.info("update {}, {}", id, userDto);
+    @CacheEvict(value = "user", key = "#event.id")
+    public void update(UserUpdatedEvent event) {
+        log.info("update {}", event);
 
-        this.userRepository.findById(id).ifPresentOrElse(user -> {
+        this.userRepository.findById(event.id()).ifPresentOrElse(user -> {
             User newUser = User.builder()
                     .id(user.getId())
-                    .firstName(userDto.getFirstName())
-                    .lastName(userDto.getLastName())
+                    .firstName(event.firstName())
+                    .lastName(event.lastName())
                     .password(user.getPassword())
                     .isEnabled(user.getIsEnabled())
                     .isEmailVerified(user.getIsEmailVerified())
@@ -73,21 +72,20 @@ public class DefaultUserService implements UserService {
                     .role(user.getRole())
                     .build();
             this.userRepository.save(newUser);
+            this.cacheClear.clearEmail(user.getEmail());
         }, () -> {
-            throw ExceptionUtils.notFound("error.user.not_found_id", id);
+            throw ExceptionUtils.notFound("error.user.not_found_id", event.id());
         });
-
-        this.cacheClear.clearEmail(userDto.getEmail());
     }
 
     @Override
     @Transactional
-    @CacheEvict(value = "user", key = "#id")
-    public void delete(UUID id) {
-        log.info("delete {}", id);
+    @CacheEvict(value = "user", key = "#event.id")
+    public void delete(UserDeletedEvent event) {
+        log.info("delete {}", event);
 
-        User user = this.userRepository.findByIdAndIsEnabled(id, true)
-                .orElseThrow(() -> ExceptionUtils.notFound("error.user.not_found_id", id));
+        User user = this.userRepository.findByIdAndIsEnabled(event.id(), true)
+                .orElseThrow(() -> ExceptionUtils.notFound("error.user.not_found_id", event.id()));
 
         user.setIsEnabled(false);
 
