@@ -1,6 +1,7 @@
 package ru.gentleman.user.mapper;
 
 import org.mapstruct.Mapper;
+import ru.gentleman.commom.event.UserCreatedEvent;
 import ru.gentleman.user.dto.UserDto;
 import ru.gentleman.user.entity.User;
 
@@ -9,5 +10,5 @@ public interface UserMapper {
 
     UserDto toDto(User entity);
 
-    User toEntity(UserDto dto);
+    User toEntity(UserCreatedEvent dto);
 }
