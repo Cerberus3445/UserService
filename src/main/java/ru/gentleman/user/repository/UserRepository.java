@@ -11,4 +11,8 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByIdAndIsEnabled(UUID id, Boolean isEnabled);
+
+    Optional<User> findByEmailAndIsEnabled(String email, boolean isEnabled);
+
+    boolean existsByEmail(String email);
 }
